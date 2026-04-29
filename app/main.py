@@ -2,12 +2,23 @@ from fastapi import FastAPI
 from fastapi.exceptions import RequestValidationError
 from starlette.exceptions import HTTPException
 from starlette.middleware.cors import CORSMiddleware
+from starlette.requests import Request
+from starlette.responses import JSONResponse
 
 from app.api.errors.http_error import http_error_handler
 from app.api.errors.validation_error import http422_error_handler
 from app.api.routes.api import router as api_router
+from app.api.routes import health
 from app.core.config import get_app_settings
 from app.core.events import create_start_app_handler, create_stop_app_handler
+
+
+async def generic_exception_handler(_: Request, exc: Exception) -> JSONResponse:
+    """Handle all unhandled exceptions with a 500 response."""
+    return JSONResponse(
+        {"detail": "Internal server error"},
+        status_code=500,
+    )
 
 
 def get_application() -> FastAPI:
@@ -36,7 +47,9 @@ def get_application() -> FastAPI:
 
     application.add_exception_handler(HTTPException, http_error_handler)
     application.add_exception_handler(RequestValidationError, http422_error_handler)
+    application.add_exception_handler(Exception, generic_exception_handler)
 
+    application.include_router(health.router, tags=["health"])
     application.include_router(api_router, prefix=settings.api_prefix)
 
     return application

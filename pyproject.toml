@@ -44,7 +44,15 @@ combine_as_imports = true
 
 [tool.pytest.ini_options]
 testpaths = "tests"
-filterwarnings = "error"
+filterwarnings = [
+    "error",
+    "ignore:.*'crypt' is deprecated.*:DeprecationWarning",
+]
+markers = [
+    "unit: Unit tests",
+    "api: API integration tests",
+    "e2e: End-to-end tests",
+]
 addopts = '''
   --strict-markers
   --tb=short
@@ -56,14 +64,13 @@ addopts = '''
   --cov-report=xml
   --no-cov-on-fail
   --cov-fail-under=100
-  --numprocesses=auto
   --asyncio-mode=auto
 '''
 env = [
-  "SECRET_KEY=secret",
-  "MAX_CONNECTIONS_COUNT=1",
-  "MIN_CONNECTIONS_COUNT=1"
+    "APP_ENV=test",
+    "DATABASE_URL=postgresql://postgres:postgres@localhost:5432/test_db",
 ]
+
 
 [build-system]
 requires = ["poetry>=1.0"]
