@@ -45,10 +45,12 @@ class CommentsRepository(BaseRepository):
         article: Article,
         user: Optional[User] = None,
     ) -> List[Comment]:
-        comments_rows = await queries.get_comments_for_article_by_slug(
+        comments_rows = []
+        async for row in queries.get_comments_for_article_by_slug(
             self.connection,
             slug=article.slug,
-        )
+        ):
+            comments_rows.append(row)
         return [
             await self._get_comment_from_db_record(
                 comment_row=comment_row,

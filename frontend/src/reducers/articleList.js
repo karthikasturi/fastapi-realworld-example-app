@@ -19,7 +19,7 @@ export default (state = {}, action) => {
       return {
         ...state,
         articles: state.articles.map(article => {
-          if (article.slug === action.payload.article.slug) {
+          if (action.payload && action.payload.article && article.slug === action.payload.article.slug) {
             return {
               ...article,
               favorited: action.payload.article.favorited,
@@ -32,16 +32,16 @@ export default (state = {}, action) => {
     case SET_PAGE:
       return {
         ...state,
-        articles: action.payload.articles,
-        articlesCount: action.payload.articlesCount,
+        articles: action.payload && action.payload.articles ? action.payload.articles : [],
+        articlesCount: action.payload && action.payload.articlesCount ? action.payload.articlesCount : 0,
         currentPage: action.page
       };
     case APPLY_TAG_FILTER:
       return {
         ...state,
         pager: action.pager,
-        articles: action.payload.articles,
-        articlesCount: action.payload.articlesCount,
+        articles: action.payload && action.payload.articles ? action.payload.articles : [],
+        articlesCount: action.payload && action.payload.articlesCount ? action.payload.articlesCount : 0,
         tab: null,
         tag: action.tag,
         currentPage: 0
@@ -50,9 +50,9 @@ export default (state = {}, action) => {
       return {
         ...state,
         pager: action.pager,
-        tags: action.payload[0].tags,
-        articles: action.payload[1].articles,
-        articlesCount: action.payload[1].articlesCount,
+        tags: action.payload[0] && action.payload[0].tags ? action.payload[0].tags : [],
+        articles: action.payload[1] && action.payload[1].articles ? action.payload[1].articles : [],
+        articlesCount: action.payload[1] && action.payload[1].articlesCount ? action.payload[1].articlesCount : 0,
         currentPage: 0,
         tab: action.tab
       };
@@ -62,8 +62,8 @@ export default (state = {}, action) => {
       return {
         ...state,
         pager: action.pager,
-        articles: action.payload.articles,
-        articlesCount: action.payload.articlesCount,
+        articles: action.payload && action.payload.articles ? action.payload.articles : [],
+        articlesCount: action.payload && action.payload.articlesCount ? action.payload.articlesCount : 0,
         tab: action.tab,
         currentPage: 0,
         tag: null
@@ -73,8 +73,8 @@ export default (state = {}, action) => {
       return {
         ...state,
         pager: action.pager,
-        articles: action.payload[1].articles,
-        articlesCount: action.payload[1].articlesCount,
+        articles: action.payload[1] && action.payload[1].articles ? action.payload[1].articles : [],
+        articlesCount: action.payload[1] && action.payload[1].articlesCount ? action.payload[1].articlesCount : 0,
         currentPage: 0
       };
     case PROFILE_PAGE_UNLOADED:
